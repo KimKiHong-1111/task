@@ -3,7 +3,6 @@ package com.example.task.auth.dto.response;
 import java.util.List;
 
 import com.example.task.auth.entity.User;
-import com.example.task.auth.vo.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
