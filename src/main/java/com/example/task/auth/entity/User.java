@@ -1,9 +1,16 @@
 package com.example.task.auth.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.example.task.auth.vo.UserRole;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,6 +41,9 @@ public class User {
 	@Column(nullable = false)
 	private String nickname;
 
-	private UserRole userRole;
+	@ElementCollection
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private Set<UserRole> roles = new HashSet<>(Set.of(UserRole.ROLE_USER));
 
 }

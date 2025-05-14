@@ -2,6 +2,8 @@ package com.example.task.auth.service;
 
 import static com.example.task.global.exception.ErrorCode.*;
 
+import java.util.Set;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +15,6 @@ import com.example.task.auth.dto.response.SigninResponseDto;
 import com.example.task.auth.dto.response.SignupResponseDto;
 import com.example.task.auth.entity.User;
 import com.example.task.auth.repository.UserRepository;
-import com.example.task.auth.vo.AuthUser;
 import com.example.task.auth.vo.UserRole;
 import com.example.task.global.exception.BadRequestException;
 import com.example.task.global.exception.ConflictException;
@@ -37,13 +38,13 @@ public class AuthService {
 		}
 
 		String encodedPassword = passwordEncoder.encode(signupRequestDto.getPassword());
-		UserRole userRole = UserRole.ROLE_USER;
+
 
 		User newUser = User.builder()
 			.nickname(signupRequestDto.getNickname())
 			.password(encodedPassword)
-			.userRole(userRole)
 			.username(signupRequestDto.getUsername())
+			.roles(Set.of(UserRole.ROLE_USER))
 			.build();
 
 		User savedUser = userRepository.save(newUser);
@@ -63,7 +64,7 @@ public class AuthService {
 		String accessToken = jwtUtil.createAccessToken(
 			user.getId(),
 			user.getUsername(),
-			user.getUserRole(),
+			user.getRoles(),
 			user.getNickname()
 		);
 
@@ -71,14 +72,17 @@ public class AuthService {
 	}
 
 	@Transactional
-	public PatchUserRoleResponseDto grantUserRole(AuthUser authUser) {
-		User user = userRepository.findById(authUser.getId())
+	public PatchUserRoleResponseDto grantUserRole(Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(()-> new NotFoundException(USER_NOT_FOUND));
 
-		if(!user.getUserRole().contains(UserRole.ROLE_ADMIN)) {
-			user.getUserRole().add(UserRole.ROLE_ADMIN);
-			return userRepository.save(user);
+		// 역할 추가 로직
+		if (!user.getRoles().contains(UserRole.ROLE_ADMIN)) {
+			user.getRoles().add(UserRole.ROLE_ADMIN);
+			User savedUser = userRepository.save(user);
+			return PatchUserRoleResponseDto.toDto(savedUser);
 		}
+		return PatchUserRoleResponseDto.toDto(user);
 	}
 
 }

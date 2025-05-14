@@ -37,7 +37,7 @@ public class SecurityConfig {
 				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth-> auth
 				.requestMatchers("/signup","/error","/signin").permitAll()
-				.requestMatchers("/admin/**").hasRole("ADMIN")
+				.requestMatchers("/admin/**").hasRole("ROLE_ADMIN")
 				.anyRequest().authenticated())
 			.formLogin(AbstractHttpConfigurer::disable)
 			.anonymous(AbstractHttpConfigurer::disable)

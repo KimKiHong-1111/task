@@ -3,6 +3,7 @@ package com.example.task.global.filter;
 import static com.example.task.global.exception.ErrorCode.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -63,9 +64,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private void setAuthentication(Claims claims) {
 		Long userId = Long.valueOf(claims.getSubject());
 		String username = claims.get("username", String.class);
-		UserRole userRole = UserRole.of(claims.get("role", String.class));
+		String nickname = claims.get("nickname", String.class);
 
-		AuthUser authUser = new AuthUser(userId, username, userRole);
+		List<String> roleStrings = claims.get("roles", List.class);
+		List<UserRole> roles = roleStrings.stream().map(UserRole::of).toList();
+
+		AuthUser authUser = new AuthUser(userId, username, nickname, roles);
 		JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(authUser);
 
 		SecurityContextHolder.getContext().setAuthentication(authenticationToken);

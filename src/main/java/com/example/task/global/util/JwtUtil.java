@@ -5,6 +5,8 @@ import static com.example.task.global.exception.ErrorCode.*;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -40,13 +42,13 @@ public class JwtUtil {
 		key = Keys.hmacShaKeyFor(bytes);
 	}
 
-	public String createAccessToken(Long userId, String username, UserRole role, String nickname) {
+	public String createAccessToken(Long userId, String username, Set<UserRole> roles, String nickname) {
 		Date date = new Date();
 
 		return Jwts.builder()
 			.setSubject(String.valueOf(userId))
 			.claim("username", username)
-			.claim("role", role)
+			.claim("roles", roles.stream().map(UserRole::getAuthority).collect(Collectors.toList()))
 			.claim("nickname", nickname)
 			.setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
 			.setIssuedAt(date) //발급일

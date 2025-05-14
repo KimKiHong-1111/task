@@ -1,6 +1,6 @@
 package com.example.task.auth.dto.response;
 
-import java.util.List;
+import java.util.Set;
 
 import com.example.task.auth.entity.User;
 import com.example.task.auth.vo.UserRole;
@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 public class SignupResponseDto {
 	private final String username;
 	private final String nickname;
-	private final List<UserRole> roles;
+	private final Set<UserRole> roles;
 
 	public static SignupResponseDto toDto(User user) {
 		return SignupResponseDto.builder()
 			.username(user.getUsername())
 			.nickname(user.getNickname())
-			.roles(List.of(user.getUserRole()))
+			.roles(user.getRoles())
 			.build();
 	}
 

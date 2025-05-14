@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,6 @@ import com.example.task.auth.dto.response.PatchUserRoleResponseDto;
 import com.example.task.auth.dto.response.SigninResponseDto;
 import com.example.task.auth.dto.response.SignupResponseDto;
 import com.example.task.auth.service.AuthService;
-import com.example.task.auth.vo.AuthUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,11 +54,11 @@ public class AuthController {
 	}
 
 	@PatchMapping("admin/users/{userId}/roles")
-	@Secured(ADMIN)
+	@Secured("ADMIN")
 	public ResponseEntity<PatchUserRoleResponseDto> grantAdminRole(
-		@AuthenticationPrincipal AuthUser authUser
+		@PathVariable Long userId
 	) {
-		PatchUserRoleResponseDto patchUserRoleResponseDto = authService.grantUserRole(authUser);
+		PatchUserRoleResponseDto patchUserRoleResponseDto = authService.grantUserRole(userId);
 		return new ResponseEntity<>(patchUserRoleResponseDto, HttpStatus.OK);
 	}
 }
