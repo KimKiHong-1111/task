@@ -5,10 +5,8 @@ import java.util.List;
 import com.example.task.auth.entity.User;
 import com.example.task.auth.vo.UserRole;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Builder

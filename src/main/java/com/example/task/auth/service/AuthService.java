@@ -8,17 +8,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.task.auth.dto.request.SigninRequestDto;
 import com.example.task.auth.dto.request.SignupRequestDto;
+import com.example.task.auth.dto.response.PatchUserRoleResponseDto;
 import com.example.task.auth.dto.response.SigninResponseDto;
 import com.example.task.auth.dto.response.SignupResponseDto;
 import com.example.task.auth.entity.User;
 import com.example.task.auth.repository.UserRepository;
+import com.example.task.auth.vo.AuthUser;
 import com.example.task.auth.vo.UserRole;
 import com.example.task.global.exception.BadRequestException;
 import com.example.task.global.exception.ConflictException;
 import com.example.task.global.exception.NotFoundException;
 import com.example.task.global.util.JwtUtil;
 
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -69,5 +70,15 @@ public class AuthService {
 		return new SigninResponseDto(accessToken);
 	}
 
+	@Transactional
+	public PatchUserRoleResponseDto grantUserRole(AuthUser authUser) {
+		User user = userRepository.findById(authUser.getId())
+			.orElseThrow(()-> new NotFoundException(USER_NOT_FOUND));
+
+		if(!user.getUserRole().contains(UserRole.ROLE_ADMIN)) {
+			user.getUserRole().add(UserRole.ROLE_ADMIN);
+			return userRepository.save(user);
+		}
+	}
 
 }

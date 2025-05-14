@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.example.task.global.exception.NotFoundException;
 import com.example.task.global.exception.UnauthorizedException;
 
 import lombok.Getter;
