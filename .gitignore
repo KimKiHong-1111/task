@@ -36,4 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 *.properties
-
+!gradle/wrapper/gradle-wrapper.properties
+*.env
+*.dockerignore
+mykey.pem
